@@ -1,4 +1,4 @@
-INTEGER, PLUS, MINUS, EOF = 'INTEGER', 'PLUS', 'MINUS' , 'EOF'
+INTEGER, PLUS, MINUS, PROD, DIV, EOF = 'INTEGER', 'PLUS', 'MINUS' , 'PROD', 'DIV', 'EOF'
 
 class Token():
     def __init__(self,type,value):
@@ -24,7 +24,7 @@ class Interpreter():
         
         
     def advance(self):
-        print("advanve pos : ", self.pos)
+        #print("advanve pos : ", self.pos)
         self.pos += 1
         if (self.pos > len(self.text) - 1):
             self.current_char = None
@@ -40,24 +40,24 @@ class Interpreter():
         result = ''
         while self.current_char is not None and self.current_char.isdigit():
             result += self.current_char
-            print("Integer")
-            print("current integer : ", self.current_char)
+            #print("Integer")
+            #print("current integer : ", self.current_char)
             self.advance()
-        print("integer result : ", int(result))    
+        #print("integer result : ", int(result))    
         return int(result)    
     
     def get_next_token(self):
         
         # continue parsing as long as there is data
         while self.current_char is not None:
-            print("Get next token")
-            print("current char : ", self.current_char)
+            #print("Get next token")
+            #print("current char : ", self.current_char)
             
             # handle white spaces before and after digits
             if self.current_char.isspace():
                 #self.skip_whitespace()
                 self.advance()
-                print("White space")
+                #print("White space")
                 continue
                 
             # handle integers (multiple digits)
@@ -74,6 +74,13 @@ class Interpreter():
                 self.advance()
                 return Token(MINUS, None)
             
+            if self.current_char == '*':
+                self.advance()
+                return Token(PROD, None)
+        
+            if self.current_char == '/':
+                self.advance()
+                return Token(DIV, None)
             # rasie exception if the data is neither integer nor operation
             self.error()
             
@@ -81,8 +88,8 @@ class Interpreter():
         return Token(EOF, None)
     
     def eat(self, token_type):
-        print("eat type: ",token_type)
-        print("toke type: ",self.current_token.type)
+        #print("eat type: ",token_type)
+        #print("toke type: ",self.current_token.type)
         if(self.current_token.type == token_type):
             self.current_token = self.get_next_token()
         else:
@@ -100,6 +107,10 @@ class Interpreter():
             self.eat(PLUS)
         elif(op.type == MINUS):
             self.eat(MINUS)
+        elif(op.type == PROD):
+            self.eat(PROD)
+        elif(op.type == DIV):
+            self.eat(DIV)    
             
         right = self.current_token
         self.eat(INTEGER)
@@ -108,6 +119,13 @@ class Interpreter():
             result = left.value + right.value
         elif(op.type == MINUS):
             result = left.value - right.value
+        elif(op.type == PROD):
+            result = left.value * right.value
+        elif(op.type == DIV):
+            if(right.value is not 0):
+                result = left.value / right.value 
+            else:
+                raise Exception("Divided by zero")
         return result
     
     
