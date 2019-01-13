@@ -1,2 +1,2 @@
 # BASIC-simple-interpreter
-Simple interpreter for BASIC language 
+Simple interpreter for BASIC language using Python
