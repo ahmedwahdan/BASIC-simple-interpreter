@@ -97,35 +97,38 @@ class Interpreter():
     
     def expr(self):
         
+        result = 0
+        
         self.current_token = self.get_next_token()
         
         left = self.current_token
         self.eat(INTEGER)
-    
-        op = self.current_token   
-        if(op.type == PLUS):
-            self.eat(PLUS)
-        elif(op.type == MINUS):
-            self.eat(MINUS)
-        elif(op.type == PROD):
-            self.eat(PROD)
-        elif(op.type == DIV):
-            self.eat(DIV)    
+        while self.current_token.type is not EOF:
+            op = self.current_token   
+            if(op.type == PLUS):
+                self.eat(PLUS)
+            elif(op.type == MINUS):
+                self.eat(MINUS)
+            elif(op.type == PROD):
+                self.eat(PROD)
+            elif(op.type == DIV):
+                self.eat(DIV)    
             
-        right = self.current_token
-        self.eat(INTEGER)
+            right = self.current_token
+            self.eat(INTEGER)
         
-        if(op.type == PLUS):
-            result = left.value + right.value
-        elif(op.type == MINUS):
-            result = left.value - right.value
-        elif(op.type == PROD):
-            result = left.value * right.value
-        elif(op.type == DIV):
-            if(right.value is not 0):
-                result = left.value / right.value 
-            else:
-                raise Exception("Divided by zero")
+            if(op.type == PLUS):
+                left.value =  left.value + right.value
+            elif(op.type == MINUS):
+                left.value =  left.value - right.value
+            elif(op.type == PROD):
+                left.value = left.value * right.value
+            elif(op.type == DIV):
+                if(right.value is not 0):
+                    left.value = left.value / right.value 
+                else:
+                    raise Exception("Divided by zero")
+        result = left.value       
         return result
     
     
